@@ -1,0 +1,19 @@
+--Install and Upgrade--
+1) Run "python setup.py build" in the root folder.
+2) Run "python setup.py install" in the root folder.
+Run point 2) everytime a modification is done in the scripts to update the dist files.
+
+--Execution--
+1) Run "pcidss_convert --txt --table-hotword "PCI DSS Question" input.docx output.properties" in the bin folder.
+2) Run "pcidss_convert --sql --table-hotword "PCI DSS Question" input.docx output.sql" in the bin folder.
+
+The two will create individually the input files as SQL scripts or as property files.
+The parameter " --table-hotword "PCI DSS Question" "  specifies the title of the first column of the SAQ (to be used when parsing different languages).
+
+--Preparation of SAQs to use with the parser--
+1)Unlock the docx removing the enforcement
+2)Remove all appendixes after section 12 (or any last section followed by appendixes)
+3)Remove all "non requirement" rows from the sections tables (i.e. the green row in section 6)
+
+--Appendixes---
+For appendixes (i.e. A2), remove letters from the tables indexes and replace them with numbered list to follow the PCI DSS sections (i.e. A.1.1 --> 13.1.1).

@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: pcidss-convert
+Version: 0.0.1
+Summary: PCI DSS docx2sql converter
+Home-page: UNKNOWN
+Author: Yaroslav Dobzhanskij
+Author-email: merlyn.tgz@gmail.com
+License: MIT
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Topic :: Text Processing :: Linguistic
+
+UNKNOWN
+

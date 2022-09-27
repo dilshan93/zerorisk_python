@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+'''
+DocX table crawler.
+Extracts data and saves insert query to providen .sql dest file
+'''
+from pcidss_convert import DocxParser
+from argparse import ArgumentParser
+import logging
+import codecs
+
+SQL_FORMAT = 'sql'
+TXT_FORMAT = 'txt'
+
+def sqlGenerator(data):
+    yield "INSERT INTO `PCI_QUESTION` (`ID`, `ANSWER_TYPE`, `CODE`, `MILESTONE`, `SECTION`, `TEXT`, `TESTING`, `REQ`)\nVALUES\n"
+    yield ",\n".join(["\t({id}, '{answer_type}', '{code}', '{milestone}', '{section}', '{text}', '{testing}', {req})".format(**row) for row in data])
+    yield ";\n"
+
+def txtGenetator(data):
+    for row in data:
+        yield "pciquestion.{code}.text={text}\n".format(**row)
+        if len(row['testing']):
+            yield "pciquestion.{code}.testing={testing}\n".format(**row)
+
+def main(args):
+    logging.basicConfig(level=args.loglevel or logging.INFO)
+    logging.debug('App is executed')
+    if args.table_hotword:
+        hw = args.table_hotword
+    else:
+        hw = "PCI DSS Question"
+    doc_parser = DocxParser(args.docx, hw)
+    data = doc_parser.extract()
+    if args.output_format == SQL_FORMAT:
+        generator = sqlGenerator;
+    elif args.output_format == TXT_FORMAT:
+        generator = txtGenetator;
+    with codecs.open(args.result, 'w', 'utf-8') as result_file:
+        for line in generator(data):
+            result_file.write(line)
+
+if __name__ == '__main__':
+    parser = ArgumentParser(description=__doc__)
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-d', '--debug', help='Verbose (debug) logging', action='store_const', const=logging.DEBUG,
+        dest='loglevel')
+    group.add_argument('-w', '--warn', help='Show warnings only', action='store_const',
+        const=logging.WARN, dest='loglevel')
+    output_format = parser.add_mutually_exclusive_group(required=True)
+    output_format.add_argument('--sql', help='SQL output format', action='store_const', const=SQL_FORMAT, dest='output_format')
+    output_format.add_argument('--txt', help='TXT output format', action='store_const', const=TXT_FORMAT, dest='output_format')
+    parser.add_argument('--table-hotword', help='Text used to detect beginning of a table', action='store', dest='table_hotword')
+    parser.add_argument("docx", help="your DOCX file path")
+    parser.add_argument("result", help="result file path")
+    args = parser.parse_args()
+    try:
+        main(args)
+    except:
+        logging.exception('Running finished unexpectedly')
