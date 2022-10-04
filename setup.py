@@ -14,7 +14,7 @@ setup(name='pcidss_convert',
       license='MIT',
       packages=['pcidss_convert'],
       install_requires=[
-          'mammoth',
+          'mammoth==1.3.5',
       ],
       scripts=['bin/pcidss_convert'],
       zip_safe=True)

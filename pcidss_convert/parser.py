@@ -42,7 +42,7 @@ class DocxParser:
         else:
             text_element = row[1]
             testing_element = row[2]
-        if text_element.get('rowspan') > 1:
+        if text_element.get('rowspan') is not None and text_element.get('rowspan') > 1:
             self._skip_next_row()
         data['id'] = self.id
         data['text'] = str(re.sub(self.text_regexp, '', " ".join(["".join(element.itertext()) for element in text_element])))
